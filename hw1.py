@@ -36,9 +36,9 @@ allani = {"total_count":sum(numani.values())}
 
 fanimals = open("animals.out", "w")
 fanimals.write(str(numlist) + "\n") # the list of numbers
-fanimals.write("%.2e" %(math.log(sum(numlist))) + "\n") # the sum of numbers
-fanimals.write(str(numani) + "\n") # the numer of each kind of animals
-fanimals.write(str(allani)) # the numer of animals
+fanimals.write("%.2e" %(math.log(sum(numlist))) + "\n") # the sum of numbers, result: 1.57e+01
+fanimals.write(str(numani) + "\n") # the numer of each kind of animals, result: {'dog': 3736, 'zebra': 7779, 'tiger': 6815, 'monkey': 8323}
+fanimals.write(str(allani)) # the numer of animals, result: {'total_count': 26653}
 fanimals.close()
 
 ffixed = open("fixed.out", "w")
