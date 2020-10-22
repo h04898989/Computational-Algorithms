@@ -1,5 +1,4 @@
 class Point:
-    #class variables define min/max coords
     n=0
     sumP = []
     Pcentroid = None
@@ -33,12 +32,10 @@ class Point:
         self.coords = self.pTolist(coords)
         self.sumpoints(self.coords)
         
-    #move the point by x,y
     def moveBy(self,*x):
         for i in range(len(x)):
             self.coords[i]+=x[i]
             
-    #move the point to x,y
     def moveTo(self,*x):
         for i in range(len(x)):
             self.coords[i]=x[i]
