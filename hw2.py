@@ -1,3 +1,4 @@
+
 class Point:
     n=0
     sumP = []
@@ -5,7 +6,6 @@ class Point:
     
     @classmethod
     def sumpoints(cls, pList=[]):
-        print("before: ",cls.sumP,", ",cls.Pcentroid,", ",cls.n)
         try:
             if cls.n==0:
                 cls.sumP = pList
@@ -21,7 +21,6 @@ class Point:
     def centroid(cls, pList=[]):
         cls.sumpoints(pList)
         cls.Pcentroid = Point([round(float(k/cls.n),2)  for k in cls.sumP])
-        print("after: ",cls.sumP,", ",cls.Pcentroid,", ",cls.n)
         return cls.Pcentroid
     
     def __init__(self, *coords):
@@ -34,7 +33,7 @@ class Point:
     def moveTo(self,*x):
         for i in range(len(x)):
             self.coords[i]=x[i]
-              
+            
     def distanceTo(self, *p2):
         temp = 0
         try:
@@ -47,24 +46,31 @@ class Point:
             print('Caught an exception!')
     
     def pTolist(self,tup):
+        pList=[]
         s = str(tup)
         for i in s:
             if not (i.isdigit() or i=="," or i=="." or i=="-"):
                 s = s.replace(i,"")
         s = s.rstrip(",")#'1.0,2.0,3.0'
-        return [float(i) for i in s.split(",")]
+        for i in s.split(","):
+            #print(str(i).split("."))
+            if str(i).split(".")[-1]=='0' or len(str(i).split("."))==1:
+                pList.append(int(float(i)))
+            else:
+                pList.append(float(i))
+        return pList
     
     def __add__(self, other):
-        return [a+b for a,b in zip(self.coords, other.coords)]
+        return Point([a+b for a,b in zip(self.coords, other.coords)])
         
     def __sub__(self, other):
-        return [a-b for a,b in zip(self.coords, other.coords)]
+        return Point([a-b for a,b in zip(self.coords, other.coords)])
         
     def __mul__(self, other):
-        return [i*other for i in self.coords]
+        return Point([i*other for i in self.coords])
             
     def __rmul__(self, other):
-        return [i*other for i in self.coords]
+        return Point([i*other for i in self.coords])
         
     def __gt__(self, other):
         b = True
@@ -83,9 +89,30 @@ class Point:
     
     def __setitem__(self, key, value):
         self.coords[key] = value
-        
+    
     def __str__(self):
         return str(self.coords)
     
     def __repr__(self):
         return str(self.coords)
+
+    
+a = Point(-1,-2,-3,-4,-5)
+print(a) #[-1, -2, -3, -4, -5]
+b = Point(a)
+print(b) #[-1, -2, -3, -4, -5]
+b.moveBy(1,1,1,1,1)
+print(b) #[0, -1, -2, -3, -4]
+b.moveTo(1,2,3,4,5)
+print(b) #[1, 2, 3, 4, 5]
+c = 0.5*b
+print(c) #[0.5, 1, 1.5, 2, 2.5]
+print(b+c) #[1.5, 3, 4.5, 6, 7.5]
+print(b-c) #[0.5, 1, 1.5, 2, 2.5]
+print(b>a)
+print(a==b)
+print(a==(-2*c))
+
+print(Point.centroid(a))
+print(Point.centroid(b))
+print(Point.centroid(c))
