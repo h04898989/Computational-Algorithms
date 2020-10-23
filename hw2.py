@@ -1,26 +1,15 @@
 
 class Point:
     n=0
-    sumP = []
+    sumP = None
     Pcentroid = None
     
     @classmethod
-    def sumpoints(cls, pList=[]):
-        try:
-            if cls.n==0:
-                cls.sumP = pList
-            else:
-                cls.sumP = [a+b for a,b in zip(cls.sumP,pList)]
-        except IndexError:
-            print('Caught dismatch matrices!')
-        except:
-            print('Caught an exception!')
-        cls.n+=1
-        
-    @classmethod
     def centroid(cls, pList=[]):
-        cls.sumpoints(pList)
-        cls.Pcentroid = Point([round(float(k/cls.n),2)  for k in cls.sumP])
+        cls.sumP = Point([0 for i in range(len(pList[0]))])
+        for i in range(len(pList)):
+            cls.sumP = cls.sumP + pList[i]
+            cls.Pcentroid = cls.sumP*(1/len(pList))
         return cls.Pcentroid
     
     def __init__(self, *coords):
@@ -95,25 +84,6 @@ class Point:
     
     def __repr__(self):
         return str(self.coords)
-
     
-a = Point(-1,-2,-3,-4,-5)
-print(a) #[-1, -2, -3, -4, -5]
-b = Point(a)
-print(b) #[-1, -2, -3, -4, -5]
-b.moveBy(1,1,1,1,1)
-print(b) #[0, -1, -2, -3, -4]
-b.moveTo(1,2,3,4,5)
-print(b) #[1, 2, 3, 4, 5]
-c = 0.5*b
-print(c) #[0.5, 1, 1.5, 2, 2.5]
-print(b+c) #[1.5, 3, 4.5, 6, 7.5]
-print(b-c) #[0.5, 1, 1.5, 2, 2.5]
-print(b>a)
-print(a==b)
-print(a==(-2*c))
-
-print(Point.centroid(a))
-print(Point.centroid(b))
-print(Point.centroid(c))
-print(Point.Pcentroid)
+    def __len__(self):
+        return len(self.coords)
