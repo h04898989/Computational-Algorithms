@@ -1,6 +1,5 @@
 
 class Point:
-    n=0
     sumP = None
     Pcentroid = None
     
