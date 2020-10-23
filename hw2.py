@@ -40,9 +40,8 @@ class Point:
         for i in s:
             if not (i.isdigit() or i=="," or i=="." or i=="-"):
                 s = s.replace(i,"")
-        s = s.rstrip(",")#'1.0,2.0,3.0'
+        s = s.rstrip(",")
         for i in s.split(","):
-            #print(str(i).split("."))
             if str(i).split(".")[-1]=='0' or len(str(i).split("."))==1:
                 pList.append(int(float(i)))
             else:
