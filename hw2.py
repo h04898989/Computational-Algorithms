@@ -5,6 +5,7 @@ class Point:
     
     @classmethod
     def sumpoints(cls, pList=[]):
+        print("before: ",cls.sumP,", ",cls.Pcentroid,", ",cls.n)
         try:
             if cls.n==0:
                 cls.sumP = pList
@@ -15,22 +16,16 @@ class Point:
         except:
             print('Caught an exception!')
         cls.n+=1
-        cls.calcentroid(cls.sumP)
         
     @classmethod
-    def calcentroid(cls, pList=[]):
-        cls.Pcentroid = [k/cls.n  for k in pList]
-    
-    @classmethod
     def centroid(cls, pList=[]):
-        return Point(cls.Pcentroid)
-    
-    def make_P(self,l):
-        return Point(l)
+        cls.sumpoints(pList)
+        cls.Pcentroid = Point([round(float(k/cls.n),2)  for k in cls.sumP])
+        print("after: ",cls.sumP,", ",cls.Pcentroid,", ",cls.n)
+        return cls.Pcentroid
     
     def __init__(self, *coords):
         self.coords = self.pTolist(coords)
-        self.sumpoints(self.coords)
         
     def moveBy(self,*x):
         for i in range(len(x)):
@@ -39,7 +34,7 @@ class Point:
     def moveTo(self,*x):
         for i in range(len(x)):
             self.coords[i]=x[i]
-            
+              
     def distanceTo(self, *p2):
         temp = 0
         try:
@@ -50,15 +45,15 @@ class Point:
             print('Caught dismatch matrices!')
         except:
             print('Caught an exception!')
-            
+    
     def pTolist(self,tup):
         s = str(tup)
         for i in s:
-            if not (i.isdigit() or i==","):
+            if not (i.isdigit() or i=="," or i=="." or i=="-"):
                 s = s.replace(i,"")
-        s = s.rstrip(",")
-        return [int(i) for i in s.split(",")]
-        
+        s = s.rstrip(",")#'1.0,2.0,3.0'
+        return [float(i) for i in s.split(",")]
+    
     def __add__(self, other):
         return [a+b for a,b in zip(self.coords, other.coords)]
         
@@ -88,7 +83,7 @@ class Point:
     
     def __setitem__(self, key, value):
         self.coords[key] = value
-    
+        
     def __str__(self):
         return str(self.coords)
     
