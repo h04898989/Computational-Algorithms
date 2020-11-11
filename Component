@@ -1,0 +1,63 @@
+# Components module
+#
+
+class Component:
+    """
+    Base class for all component types
+    """
+    def updateOutput(self):
+        raise Exception('Error: Must override updateOutput method in derived classes!')
+    
+    def getOutput(self):
+        return self.outputState
+
+
+class Inverter(Component):
+    """
+    Ideal Inverter component (no propagation delay)
+    """
+    def __init__(self):
+        self.currentInput=0
+        self.outputState=1
+     
+    def setInput(self, inputState):
+        self.currentInput=inputState
+           
+    def updateOutput(self):
+        if self.currentInput == 0:
+            self.outputState=1
+        elif self.currentInput == 1:
+            self.outputState=0
+        else:
+            raise Exception('Error: Invalid input on Inverter component: {}'.format(self.currentInput))
+        
+    def __str__(self):
+        s=''
+        s+='Input : ' + str(self.currentInput) + '\n'
+        s+='Output: ' + str(self.outputState)
+        return s
+
+
+class Oscillator(Component):
+    """
+    Ideal oscillator component
+    """
+    def __init__(self, clkHalfPeriod):
+        self.clkHalfPeriod=clkHalfPeriod
+        self.counter=-1
+        self.outputState=0
+     
+    def updateOutput(self):
+        #increment internal counter
+        self.counter+=1
+        
+        # toggle the signal every clkHalfPeriod time steps
+        if self.counter%self.clkHalfPeriod == 0:
+            self.outputState=(self.outputState+1)%2 
+            self.counter=0 #reset counter
+                       
+    def __str__(self):
+        s=''
+        s+='clkHalfPeriod: ' + str(self.clkHalfPeriod) + '\n'
+        s+='Output: ' + str(self.outputState)
+        return s
