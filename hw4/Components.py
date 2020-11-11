@@ -12,24 +12,25 @@ class Component:
         return self.outputState
 
 
-class Inverter(Component):
+class LPFilter(Component):
     """
-    Ideal Inverter component (no propagation delay)
+    Ideal LPFilter component
     """
-    def __init__(self):
+    def __init__(self, alpha):
+        self.alpha=alpha
+        self.temp=0
         self.currentInput=0
-        self.outputState=1
+        self.outputState=0
      
     def setInput(self, inputState):
+        self.temp=self.outputState
         self.currentInput=inputState
-           
+        
     def updateOutput(self):
-        if self.currentInput == 0:
-            self.outputState=1
-        elif self.currentInput == 1:
-            self.outputState=0
-        else:
-            raise Exception('Error: Invalid input on Inverter component: {}'.format(self.currentInput))
+        try:
+            self.outputState = self.alpha*self.currentInput+(1-self.alpha)*self.temp
+        except Exception as info:
+            print(info)
         
     def __str__(self):
         s=''
@@ -38,22 +39,26 @@ class Inverter(Component):
         return s
 
 
-class Oscillator(Component):
+class PulseGen(Component):
     """
-    Ideal oscillator component
+    Ideal Pulse Generator component
     """
-    def __init__(self, clkHalfPeriod):
-        self.clkHalfPeriod=clkHalfPeriod
+    def __init__(self, loPulsePeriod, hiPulsePeriod):
+        self.loPulsePeriod=loPulsePeriod
+        self.hiPulsePeriod=hiPulsePeriod
         self.counter=-1
-        self.outputState=0
+        self.outputState=1
      
     def updateOutput(self):
         #increment internal counter
         self.counter+=1
         
         # toggle the signal every clkHalfPeriod time steps
-        if self.counter%self.clkHalfPeriod == 0:
-            self.outputState=(self.outputState+1)%2 
+        if self.counter%(self.loPulsePeriod+self.hiPulsePeriod) != 0:
+            if self.counter%(self.loPulsePeriod) == 0:
+                self.outputState=(self.outputState+1)%2
+        else:
+            self.outputState=(self.outputState+1)%2
             self.counter=0 #reset counter
                        
     def __str__(self):
