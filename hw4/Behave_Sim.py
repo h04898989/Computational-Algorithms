@@ -1,28 +1,23 @@
 # Behave_Sim.py
 #
-# Example Main program for PC_Lab_04: Assignment #2
-#
 import optparse
 import sys
 import yaml
 
-#import sim Components
-from Components import Inverter, Oscillator
+from Components import LPFilter, PulseGen
 
-#simple function for plotting results on screen
-#
+# plot
 def gen_plot(inputSignal,outputSignal):
     import matplotlib.pyplot as plt
     fig,ax=plt.subplots(1,1)
     timeAxis=list(range(len(inputSignal)))
-    shftOutput=[sig+2 for sig in outputSignal] #let's offset the output signal for easier viewing
+    shftOutput=[sig+2 for sig in outputSignal]
     plt.plot(timeAxis,inputSignal,linestyle='solid')
     plt.plot(timeAxis,shftOutput,linestyle='solid')
     plt.show()
 
 
 # Main entry point
-#
 def main(argv=None):
     if argv is None:
         argv = sys.argv
@@ -38,20 +33,21 @@ def main(argv=None):
         #load config data from yaml file
         yml_cfg={}
         if options.infileName != None:
-            yml_cfg=yaml.safe_load(open(options.infileName))['Behave_Sim']
+            yml_cfg = yaml.safe_load(open(options.infileName))['Behave_Sim']
         else:
             raise Exception('Error: Input file required!')
         
         #set sim param's
         numTimeSteps=yml_cfg['numTimeSteps']
-        clkHalfPeriod=yml_cfg['clkHalfPeriod']
+        loPulsePeriod=yml_cfg['loPulsePeriod']
+        hiPulsePeriod=yml_cfg['hiPulsePeriod']
+        alpha=yml_cfg['alpha']
+        
         outfile=open(yml_cfg['outputFileName'],'w')
 
-        #init oscillator and inverter objects
-        osc1=Oscillator(clkHalfPeriod)
-        inv1=Inverter()
-        inv2=Inverter()
-        inv3=Inverter()
+        #init PulseGen and LPFilter objects
+        pul1=PulseGen(loPulsePeriod, hiPulsePeriod)
+        lpf1=LPFilter(alpha)
         
         inputSequence=[]
         outputSequence=[]
@@ -59,23 +55,17 @@ def main(argv=None):
         #This is the main time iteration loop,
         #  each iteration is one time increment
         for i in range(numTimeSteps):
-            osc1.updateOutput()
+            pul1.updateOutput()
             
-            inv1.setInput(osc1.getOutput())
-            inv1.updateOutput()
-            
-            inv2.setInput(inv1.getOutput())
-            inv2.updateOutput()
-            
-            inv3.setInput(inv2.getOutput())
-            inv3.updateOutput()
+            lpf1.setInput(pul1.getOutput())
+            lpf1.updateOutput()
             
             #write input and output signals to output file
-            outfile.write('{}\t{}\n'.format(osc1.getOutput(),inv3.getOutput()))
+            outfile.write('{}\t{}\n'.format(pul1.getOutput(),lpf1.getOutput()))
             
             #let's save the input/output sequences for plotting on-screen later...
-            inputSequence.append(osc1.getOutput())
-            outputSequence.append(inv3.getOutput())
+            inputSequence.append(pul1.getOutput())
+            outputSequence.append(lpf1.getOutput())
             
                    
         #close the output file                 
