@@ -1,0 +1,6 @@
+Behave_Sim:
+  outputFileName: sim_out.txt
+  numTimeSteps: 128
+  hiPulsePeriod: 4
+  loPulsePeriod: 6
+  alpha: 0.1
