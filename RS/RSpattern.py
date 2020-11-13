@@ -33,6 +33,7 @@ del temp, ret, i
 nf = 0 #幀數
 colmatrix[nf] = list(colmatrix[nf])#把第x幀的colmatrix變成list
 
+#進行fitting與篩選
 colmatrix_0 = fit()
 colmatrix_0.thresholding(list(range(height)),colmatrix[nf],2)
 colmatrix_1 = fit()
@@ -52,21 +53,21 @@ plt.plot(range(height),colmatrix_2.getOutput(),lw=0.3) #第三次篩選後
 #print(colmatrix_2.getOutput())
 
 #尋找各種sample rate下的header
-want_to_find = colmatrix_2.getOutput() # 想找header的list
-findrange = int(len(want_to_find)/8)
+orilist = colmatrix_2.getOutput() #想找header的list
+want_to_find = [1,0,1,0,1,0,1,0] #想要找到的header
+findrange = int(len(orilist)/8) #縮小查找範圍用的參數
 for i in [i+1 for i in range(findrange)]:
     for j in [i for i in range(findrange)]:
         if j<i:
-            header = findheader(want_to_find,i,j)
+            header = findheader(orilist, want_to_find, i, j)
             headerindex = header[0]
             array_at_some_samplerate = header[1]
             if headerindex!=[]:
                 print('\nheaderindex = ' + str(headerindex) + ', slice length = ' + str(header[2]) + ', start position = ' + str(header[3]))
-                print('Number of datapoints =' + str(len(array_at_some_samplerate)))
-                print('slice length = ' + str(header[2]))
-                print('startpoint = ' + str(header[3]))
+                print('Number of datapoints =' + str(len(array_at_some_samplerate))) #特定取樣率下的陣列大小
+                print('slice length = ' + str(header[2])) #取樣的間距
+                print('startpoint = ' + str(header[3])) #起始取值點
                 print('SignalArray at your sample rate =\n' + str(array_at_some_samplerate) + '\n')
-                #plt.plot(range(len(array_at_some_samplerate)),array_at_some_samplerate,lw=0.3)
                 
 print('Finished. findrange = ' + str(findrange))
 
