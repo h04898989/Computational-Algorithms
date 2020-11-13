@@ -42,17 +42,21 @@ class fit:
         return self.ydata
 
 
-def findheader(l,n,start): # n=間隔,  start=位移量
+def findheader(orilist,want_to_find,n,start): # n=取樣間隔, start=取樣起始點
     '''
     用於在list中搜尋一個連續的list
     '''
     headerindex=[]
     temp=[]
-    for i in range(len(l)): #split a list with n slice length
-        if (i+start)%n==0 and i+start<len(l):
-            temp.append(l[i+start])    
+    for i in range(len(orilist)): #split a list with n slice length
+        if (i+start)%n==0 and i+start<len(orilist): #選擇取樣點
+            temp.append(orilist[i+start])    
     for i in range(len(temp)): # 找header
-        if i<=len(temp)-8 and temp[i:i+8]==[1,0,1,0,1,0,1,0]:
+        if i<=len(temp)-8 and temp[i:i+8]==want_to_find:
             headerindex.append(i)
             print('--> Find header, index = ' + str(i) + ', slice length = ' + str(n) + ', start position = ' + str(start))
     return [headerindex,temp,n,start]
+
+
+
+
