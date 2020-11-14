@@ -4,7 +4,7 @@ Created on Thu Aug 27 01:02:08 2020
 
 @author: dengcheng
 """
-from RSfunction import findheader, fit
+from RSfunction import fit, sampling,findheader
 import matplotlib.pyplot as plt
 import cv2
 capture = cv2.VideoCapture("D:\Data\RSvideo\RSvideo.mp4")
@@ -54,21 +54,23 @@ plt.plot(range(height),colmatrix_2.getOutput(),lw=0.3) #第三次篩選後
 
 #尋找各種sample rate下的header
 orilist = colmatrix_2.getOutput() #想找header的list
-want_to_find = [1,0,1,0,1,0,1,0] #想要找到的header
-findrange = int(len(orilist)/8) #縮小查找範圍用的參數
-for i in [i+1 for i in range(findrange)]:
-    for j in [i for i in range(findrange)]:
-        if j<i:
-            header = findheader(orilist, want_to_find, i, j)
-            headerindex = header[0]
-            array_at_some_samplerate = header[1]
-            if headerindex!=[]:
-                print('\nheaderindex = ' + str(headerindex) + ', slice length = ' + str(header[2]) + ', start position = ' + str(header[3]))
-                print('Number of datapoints =' + str(len(array_at_some_samplerate))) #特定取樣率下的陣列大小
-                print('slice length = ' + str(header[2])) #取樣的間距
-                print('startpoint = ' + str(header[3])) #起始取值點
-                print('SignalArray at your sample rate =\n' + str(array_at_some_samplerate) + '\n')
-                
+header = [1,0,1,0,1,0,1,0] #想要找到的header
+findrange = int(len(orilist)/40) #縮小查找範圍用的參數
+
+for sl in [sl+1 for sl in range(findrange)]:
+    for si in [sl for sl in range(findrange)]:
+        if si<sl:
+            samlist = sampling(orilist, sl, si)
+            fhresult = findheader(samlist, header, sl, si)
+            headerindex = fhresult[0]
+            array_at_some_samplerate = fhresult[1]
+            #if headerindex!=[]:
+                #print('\nheaderindex = ' + str(headerindex) + ', slice length = ' + str(fhresult[2]) + ', start position = ' + str(fhresult[3]))
+                #print('Number of datapoints =' + str(len(array_at_some_samplerate))) #特定取樣率下的陣列大小
+                #print('slice length = ' + str(fhresult[2])) #取樣的間距
+                #print('start position = ' + str(fhresult[3])) #起始取值點
+                #print('SignalArray at your sample rate =\n' + str(array_at_some_samplerate) + '\n')
+
 print('Finished. findrange = ' + str(findrange))
 
 '''
