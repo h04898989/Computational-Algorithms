@@ -65,7 +65,7 @@ for sl in [sl+1 for sl in range(findrange)]:
             headerindex = fhresult[0]
             array_at_some_samplerate = fhresult[1]
             #if headerindex!=[]:
-                #print('\nheaderindex = ' + str(headerindex) + ', slice length = ' + str(fhresult[2]) + ', start position = ' + str(fhresult[3]))
+                #print('headerindex = ' + str(headerindex) + ', slice length = ' + str(fhresult[2]) + ', start position = ' + str(fhresult[3]))
                 #print('Number of datapoints =' + str(len(array_at_some_samplerate))) #特定取樣率下的陣列大小
                 #print('slice length = ' + str(fhresult[2])) #取樣的間距
                 #print('start position = ' + str(fhresult[3])) #起始取值點
