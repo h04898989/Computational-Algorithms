@@ -41,21 +41,27 @@ class fit:
     def getOutput(self):
         return self.ydata
 
+def sampling(orilist,sl,si):
+    '''
+    用於以不同間距取樣原始資料陣列
+    '''
+    temp=[]
+    for i in range(len(orilist)): #split a list with n slice length
+        if (i+si)%sl==0 and i+si<len(orilist): #選擇取樣點
+            temp.append(orilist[i])
+    return temp
 
-def findheader(orilist,want_to_find,n,start): # n=取樣間隔, start=取樣起始點
+
+def findheader(orilist,header,sl,si): # sl=取樣間隔, si=取樣起始點
     '''
     用於在list中搜尋一個連續的list
     '''
     headerindex=[]
-    temp=[]
-    for i in range(len(orilist)): #split a list with n slice length
-        if (i+start)%n==0 and i+start<len(orilist): #選擇取樣點
-            temp.append(orilist[i+start])    
-    for i in range(len(temp)): # 找header
-        if i<=len(temp)-8 and temp[i:i+8]==want_to_find:
+    for i in range(len(orilist)): # 找header
+        if i<=len(orilist)-len(header) and orilist[i:i+len(header)]==header:
             headerindex.append(i)
-            print('--> Find header, index = ' + str(i) + ', slice length = ' + str(n) + ', start position = ' + str(start))
-    return [headerindex,temp,n,start]
+            print('--> Find header, index = ' + str(i) + ', slice length = ' + str(sl) + ', start position = ' + str(si))
+    return [headerindex,orilist,sl,si]
 
 
 
