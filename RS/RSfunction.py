@@ -65,4 +65,3 @@ def findheader(orilist,header,sl,si): # sl=取樣間隔, si=取樣起始點
 
 
 
-
