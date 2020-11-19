@@ -49,13 +49,28 @@ plt.figure() # <Figure size 432x288 with 0 Axes>
 #plt.plot(range(height),colmatrix_1.getOutput(),lw=0.3) #第二次篩選後
 #plt.plot(range(height),colmatrix_2.getThreshold(),lw=0.3) #第三次fitting
 plt.plot(range(height),colmatrix_2.getOutput(),lw=0.3) #第三次篩選後
-
 #print(colmatrix_2.getOutput())
+
+
+import scipy.io as sio
+matp = u"D:/Data/RSvideo/newrolling.mat"
+matfile=sio.loadmat(matp)
+T = matfile["T"][0] #len 78
+T1 = matfile["T1"][0] #len 35
+'''
+for i in range(len(T)):
+    samwithT = samlist = sampling(orilist, len(T), i)
+    fhresult = findheader(samwithT, header, len(T), i)
+for i in range(len(T1)):
+    samwithT1 = samlist = sampling(orilist, len(T1), i)
+    fhresult = findheader(samwithT1, header, len(T1), i)
+'''
+
 
 #尋找各種sample rate下的header
 orilist = colmatrix_2.getOutput() #想找header的list
 header = [1,0,1,0,1,0,1,0] #想要找到的header
-findrange = int(len(orilist)/40) #縮小查找範圍用的參數
+findrange = int(len(orilist)/8) #縮小查找範圍用的參數
 
 for sl in [sl+1 for sl in range(findrange)]:
     for si in [sl for sl in range(findrange)]:
@@ -65,13 +80,17 @@ for sl in [sl+1 for sl in range(findrange)]:
             headerindex = fhresult[0]
             array_at_some_samplerate = fhresult[1]
             #if headerindex!=[]:
-                #print('headerindex = ' + str(headerindex) + ', slice length = ' + str(fhresult[2]) + ', start position = ' + str(fhresult[3]))
+                #print('headerindex = ' + str(headerindex) + ', slice length = ' + str(fhresult[2]) + ', start position = ' + str(fhresult[3])+'\n')
                 #print('Number of datapoints =' + str(len(array_at_some_samplerate))) #特定取樣率下的陣列大小
                 #print('slice length = ' + str(fhresult[2])) #取樣的間距
                 #print('start position = ' + str(fhresult[3])) #起始取值點
                 #print('SignalArray at your sample rate =\n' + str(array_at_some_samplerate) + '\n')
-
 print('Finished. findrange = ' + str(findrange))
+
+print('T = ' + str(T))
+print('len(T) = ' + str(len(T)))
+print('T1 = ' + str(T1))
+print('len(T1) = ' + str(len(T1)))
 
 '''
 #plt.xlim(0,5)
@@ -82,3 +101,7 @@ plt.title("The Title")
 #plt.savefig("filename.png",dpi=300,format="png")
 plt.show()
 '''
+
+
+
+
