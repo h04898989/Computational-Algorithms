@@ -38,7 +38,7 @@ height = 480 #height, nf, colmatrix都可刪
 nf = 0
 colmatrix = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]]
 
-
+'''
 #進行fitting與篩選
 colmatrix_0 = fit()
 colmatrix_0.thresholding(list(range(height)),colmatrix[nf],2)
@@ -55,8 +55,9 @@ plt.figure() # <Figure size 432x288 with 0 Axes>
 #plt.plot(range(height),colmatrix_1.getOutput(),lw=0.3) #第二次篩選後
 #plt.plot(range(height),colmatrix_2.getThreshold(),lw=0.3) #第三次fitting
 #plt.plot(range(height),colmatrix_2.getOutput(),lw=0.3) #第三次篩選後
-print('93->120: ' + str(colmatrix_2.getOutput()[93:120]))
-print('320->347: ' + str(colmatrix_2.getOutput()[320:347]))
+'''
+print('93->120: ' + str(colmatrix[nf][93:120]))
+print('320->347: ' + str(colmatrix[nf][320:347]))
 
 
 import scipy.io as sio
@@ -76,7 +77,7 @@ for i in range(len(T1)):
 
 
 #尋找各種sample rate下的header
-orilist = colmatrix_2.getOutput() #想找header的list
+orilist = colmatrix[nf]#colmatrix_2.getOutput() #想找header的list
 header = [1,0,1,0,1,0,1,0] #想要找到的header
 
 #找到samplerate最小參考值
@@ -92,19 +93,15 @@ for sl in [sl+1 for sl in range(findrange)]:
             samlist = h.sampling(orilist, sl, si)
             fhresult = h.findheader(samlist, header, sl, si, 0.1)
             h.sumindex(fhresult[0])
-            print('header index: ' + str(fhresult[0]) + ', ' + str(sl) + '-' + str(si) + '\n')
+            if len(fhresult[0])!=0:
+                print('header index: ' + str(fhresult[0]) + ', ' + str(sl) + '-' + str(si) + '\n')
+                print('maxdensity: ' + str(max(fhresult[2])))
 hindex = sorted(h.gethindex())
 nhindex = {s:0 for s in set(hindex)}
 
 #顯示各個headerindex出現的數量
 for s in hindex:
     nhindex[s]+=1
-'''
-#刪除只出現過一次的
-for i in nhindex.items():
-    if i[1]<2:
-        del nhindex[i[0]]
-'''
         
 print('Finished.' + str(nhindex))
 
