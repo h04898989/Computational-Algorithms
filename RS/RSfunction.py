@@ -133,14 +133,19 @@ class hfinder:
             sumdensity = 0
         for i in range(len(totaldensity)):
             if totaldensity[i]==max(totaldensity):
-                print('totaldensity = '+str(totaldensity))
                 return [sindex[i],sindex,i,totaldensity]
                 #[總和變換頻率最高的headerindex, 
                 # 長度符合的headerindex, 
                 # 總和變換頻率最高的index, 
                 # 長度符合的headerindex各自之總和變換頻率]
 
-
+def calerror(list1,list2):
+    error = 0
+    if(len(list1)==len(list2)):
+        for i in range(len(list1)):
+            if list1[i]!=list2[i]:
+                error += 1
+        return error
 
 
 
