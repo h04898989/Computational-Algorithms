@@ -87,9 +87,10 @@ header = [1,0,1,0,1,0,1,0] #想要找到的header
 #找到samplerate最小參考值
 h = hfinder()
 findrange = h.getlim(orilist, header) #縮小查找範圍用的參數
-print('limt = ' + str(h.getlim(orilist, header)))
+#print('limt = ' + str(h.getlim(orilist, header)))
 
 #判斷header的index
+rpayload = 0
 for sl in [sl+1 for sl in range(findrange)]:
     for si in [sl for sl in range(findrange)]:
         if si<sl:
@@ -98,18 +99,24 @@ for sl in [sl+1 for sl in range(findrange)]:
             fhresult = h.findheader(samlist, header, sl, si)
             h.sumindex(fhresult[0])
             if h.goodslsi(fhresult[0]): #只顯示抓到兩組以上header的
-                print('header index: ' + str(fhresult[0]) + ', ' + str(sl) + '-' + str(si))
+                #print('header index: ' + str(fhresult[0]) + ', ' + str(sl) + '-' + str(si))
                 sindex = h.selectindex(samlist,header,sl,si,len(T))
-                if sindex!=None: print('headerindex: ' + str(sindex[0]) + ' with T')
+                if sindex!=None:
+                    rpayload = list(T)
+                    #print('totaldensity = '+str(sindex[3]))
+                    print('headerindex: ' + str(sindex[0]) + ' with T')
                 sindex = h.selectindex(samlist,header,sl,si,len(T1))
-                if sindex!=None: print('headerindex: ' + str(sindex[0]) + ' with T1')
-                print('maxdensity: ' + str(max(fhresult[2])) + '\n')
+                if sindex!=None:
+                    rpayload = list(T1)
+                    #print('totaldensity = '+str(sindex[3]))
+                    print('headerindex: ' + str(sindex[0]) + ' with T1')
+                #print('maxdensity: ' + str(max(fhresult[2])) + '\n')
                 header1 = sindex[0][1]
                 header2 = sindex[0][0]
-                print(samlist[int((header1-si)/sl):int((header2-si)/sl)],sindex[0][2],0)
-                samlist2 = h.sampling(samlist[int((header1-si)/sl):int((header2-si)/sl)],sindex[0][2],0)
-                print(str(header1)+'->'+str(header2) + str(samlist2))
-                print('len(samlist2) = ' + str(len(samlist2)))
+                samlist2 = h.sampling(samlist[int((header1-si)/sl+8):int((header2-si)/sl)],sindex[0][2],0)#起點的+8是扣掉header佔據的長度
+                print('payload = ' + str(samlist2))
+                print('rpayload = ' + str(rpayload))
+                print('error number = ' + str(calerror(samlist2,rpayload)))
                 '''
                 print(orilist[fhresult[0][0]-6:fhresult[0][0]+24])
                 print(samlist[int((fhresult[0][0]-si)/sl-6):int((fhresult[0][0]-si)/sl+10)])
@@ -122,21 +129,20 @@ for sl in [sl+1 for sl in range(findrange)]:
                 print(fhresult[2][int((fhresult[0][1]-si)/sl-1):int((fhresult[0][1]-si)/sl+10)])
                 '''
 print('Finished.')
-hindex = sorted(h.gethindex())
-nhindex = {s:0 for s in set(hindex)}
 
 '''
 #顯示各個headerindex出現的數量
+hindex = sorted(h.gethindex())
+nhindex = {s:0 for s in set(hindex)}
 for s in hindex:
     nhindex[s]+=1
         
 print(nhindex)
 '''
 
-print('\nT = ' + str(T))
-print('len(T) = ' + str(len(T))+'\n')
-print('T1 = ' + str(T1))
-print('len(T1) = ' + str(len(T1)))
+print('\nT (len='+str(len(T))+') = ' + str(T))
+print('\nT1(len='+str(len(T1))+') = ' + str(T1))
+print()
 
 
 '''
