@@ -77,6 +77,10 @@ for i in range(len(T1)):
 
 
 #尋找各種sample rate下的header
+#orilist = [0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,1,1,1,0,0,0,1,1,1,1,1,1,1,1]
+#000000000011100011100011100011100011111111
+#00000000010010010010010010010010010000000
+#000111222322322322322322322322211100
 orilist = colmatrix[nf]#colmatrix_2.getOutput() #想找header的list
 header = [1,0,1,0,1,0,1,0] #想要找到的header
 
@@ -91,20 +95,43 @@ for sl in [sl+1 for sl in range(findrange)]:
         if si<sl:
             h = hfinder()
             samlist = h.sampling(orilist, sl, si)
-            fhresult = h.findheader(samlist, header, sl, si, 0.1)
+            fhresult = h.findheader(samlist, header, sl, si)
             h.sumindex(fhresult[0])
-            if len(fhresult[0])!=0:
-                print('header index: ' + str(fhresult[0]) + ', ' + str(sl) + '-' + str(si) + '\n')
-                print('maxdensity: ' + str(max(fhresult[2])))
+            if h.goodslsi(fhresult[0]): #只顯示抓到兩組以上header的
+                print('header index: ' + str(fhresult[0]) + ', ' + str(sl) + '-' + str(si))
+                sindex = h.selectindex(samlist,header,sl,si,len(T))
+                if sindex!=None: print('headerindex: ' + str(sindex[0]) + ' with T')
+                sindex = h.selectindex(samlist,header,sl,si,len(T1))
+                if sindex!=None: print('headerindex: ' + str(sindex[0]) + ' with T1')
+                print('maxdensity: ' + str(max(fhresult[2])) + '\n')
+                header1 = sindex[0][1]
+                header2 = sindex[0][0]
+                print(samlist[int((header1-si)/sl):int((header2-si)/sl)],sindex[0][2],0)
+                samlist2 = h.sampling(samlist[int((header1-si)/sl):int((header2-si)/sl)],sindex[0][2],0)
+                print(str(header1)+'->'+str(header2) + str(samlist2))
+                print('len(samlist2) = ' + str(len(samlist2)))
+                '''
+                print(orilist[fhresult[0][0]-6:fhresult[0][0]+24])
+                print(samlist[int((fhresult[0][0]-si)/sl-6):int((fhresult[0][0]-si)/sl+10)])
+                print(fhresult[1][int((fhresult[0][0]-si)/sl-1):int((fhresult[0][0]-si)/sl+10)])
+                print(fhresult[2][int((fhresult[0][0]-si)/sl-1):int((fhresult[0][0]-si)/sl+10)])
+                print('\n')
+                print(orilist[fhresult[0][1]-6:fhresult[0][1]+25])
+                print(samlist[int((322-si)/sl-6):int((fhresult[0][1]-si)/sl+10)])
+                print(fhresult[1][int((fhresult[0][1]-si)/sl-1):int((fhresult[0][1]-si)/sl+10)])
+                print(fhresult[2][int((fhresult[0][1]-si)/sl-1):int((fhresult[0][1]-si)/sl+10)])
+                '''
+print('Finished.')
 hindex = sorted(h.gethindex())
 nhindex = {s:0 for s in set(hindex)}
 
+'''
 #顯示各個headerindex出現的數量
 for s in hindex:
     nhindex[s]+=1
         
-print('Finished.' + str(nhindex))
-
+print(nhindex)
+'''
 
 print('\nT = ' + str(T))
 print('len(T) = ' + str(len(T))+'\n')
