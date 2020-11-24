@@ -97,9 +97,14 @@ class hfinder:
             if i<=len(orilist)-len(header)+1:
                 self.density.append(sum(self.difference[i:i+len(header)-2]))
         for i,j in enumerate(self.density):
-            if self.density[i]==max(self.density):
+            if self.density[i]==max(self.density) and max(self.density)>5:
                 self.hindex.append(i*sl+si)
         return [self.hindex, self.difference, self.density]
+
+
+
+
+
 
 
 
