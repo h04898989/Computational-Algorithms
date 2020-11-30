@@ -18,6 +18,7 @@ class fit:
         self.ydata = []
     
     def thresholding(self,xdata,ydata,method):
+        self.oridata = ydata.copy() #加copy才不會是ydata的reference
         self.ydata = ydata
         #para, para_covarience = optimize.curve_fit(fit函數, x資料, y資料, p0=初始參數)
         para, para_covarience = optimize.curve_fit(self.fitfunction, xdata, ydata, p0=[0,0,0])
@@ -40,17 +41,11 @@ class fit:
     
     def getOutput(self):
         return self.ydata
+    
+    def getInput(self):
+        return self.oridata
 
 class hfinder:
-    hindex = []
-    @classmethod
-    def sumindex(cls, hindex):
-        cls.hindex += hindex
-        
-    @classmethod
-    def gethindex(cls):
-        return cls.hindex
-    
     def sampling(self,orilist,sl,si):
         '''
         用於以不同間距取樣原始資料陣列
@@ -96,6 +91,7 @@ class hfinder:
         for i in range(len(orilist)):
             if i<=len(orilist)-len(header)+1:
                 self.density.append(sum(self.difference[i:i+len(header)-1]))
+                
         for i,j in enumerate(self.density):
             if self.density[i]>=max(self.density)-1 and max(self.density)>5:
                 self.hindex.append(i*sl+si)
@@ -108,36 +104,42 @@ class hfinder:
         # 以後8項的變換頻率]
     
     def goodslsi(self,index):
-        b = False
+        #index = index.sort()
         for i in range(len(index)):
-            if i>0 and abs(index[i]-index[i-1])>100:
-                return (b or True)
+            if i>0 and abs(index[i]-index[i-1])>100:# and len(index)>=2 and len(index)<=3:
+                #只取有兩個以上區域極大 且 只選擇長度為2或3
+                return True
+        return False
             
     def selectindex(self,orilist,header,sl,si,length):
         h = hfinder()
         hresult = h.findheader(orilist,header,sl,si)
-        index = hresult[0]
+        index = hresult[0] #變換頻率高疑似header的index陣列
         sindex = []
         sumdensity = 0
         totaldensity = []
+        #選擇"payload長度==想要長度"的數組header
         for i in range(len(index)):
             for j in range(len(index)-1):
                 for k in range(len(index)):
                     if i-j>=0 and ((index[i]-index[i-j])/sl-8)/(k+1)==length:
                         sindex.append((index[i], index[i-j], k+1))
-                        #[header1的index, header2的index, samplerate]
+                        #[header1的index, header2的index, 取樣間距]
+        #計算兩個header的density總和
         for i in range(len(sindex)):
             for j in range(len(sindex[i])):
                 sumdensity += hresult[2][int((sindex[i][j]-si)/sl-1)]
             totaldensity.append(sumdensity)
             sumdensity = 0
+        #輸出density總和最高的
         for i in range(len(totaldensity)):
             if totaldensity[i]==max(totaldensity):
-                return [sindex[i],sindex,i,totaldensity]
+                return [sindex[i], sindex, i, totaldensity, length]
                 #[總和變換頻率最高的headerindex, 
                 # 長度符合的headerindex, 
                 # 總和變換頻率最高的index, 
-                # 長度符合的headerindex各自之總和變換頻率]
+                # 長度符合的headerindex各自之總和變換頻率
+                # 使用的長度]
 
 def calerror(list1,list2):
     error = 0
@@ -146,6 +148,7 @@ def calerror(list1,list2):
             if list1[i]!=list2[i]:
                 error += 1
         return error
+    else: raise Exception
 
 
 
