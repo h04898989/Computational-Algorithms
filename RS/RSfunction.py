@@ -4,11 +4,12 @@ Created on Thu Aug 27 07:20:24 2020
 
 @author: dengcheng
 """
+from math import ceil, floor
 from scipy import optimize
 
 class fit:
     '''
-    用於對一組資料fitting，並以此做thresholding
+    用於對一組資料fitting，並以此做thresholding。
     '''
     def fitfunction(self,x,a,b,c):
         return a*pow(x,2)+b*x+c
@@ -149,6 +150,88 @@ def calerror(list1,list2):
                 error += 1
         return error
     else: raise Exception
+
+def getSum(orilist):
+    '''
+    Parameters
+    ----------
+    orilist : List
+        Original List.
+
+    Returns
+    -------
+    sumlist : List
+        Summate same adjacent numbers.
+
+    '''
+    j=0
+    sumlist = []
+    for i in range(len(orilist)):
+        if orilist[i]!=orilist[i-1] and i>0:
+            sumlist.append(i-j)
+            j = i
+    return sumlist
+
+def numOf0(num):
+    return round(num/6)
+    
+def numOf1(num):
+    ceil = 5
+    if num%6>=ceil: return num//6+1
+    else:  return num//6
+
+def getHeader(orilist):
+    header = []
+    for i in range(len(orilist)):
+        if sum(orilist[i-6:i])<21 and i>5:
+            header.append((i-6,i-1)) #header from i-6 to i-1
+    return header
+
+def getnumList(sumlist, header):
+    numlist = []
+    hf = -1
+    for i in range(len(header)+1):
+        seg = []
+        if i<len(header): # 第三個段落的hi令為len(sumlist)
+            hi = header[i][0]
+        else:
+            hi = len(sumlist)
+        
+        for j in range(len(sumlist[hf+1:hi])):
+            if abs(hf+1+j-hi)%2==0:
+                if i==1: print('1-'+str(sumlist[hf+1+j])+'sum='+str(numOf1(sumlist[hf+1+j])))
+                seg.append((1,numOf1(sumlist[hf+1+j])))
+            else:
+                if i==1: print('0-'+str(sumlist[hf+1+j])+'sum='+str(numOf0(sumlist[hf+1+j])))
+                seg.append((0,numOf0(sumlist[hf+1+j])))
+            if hf+1+j==hi: break
+        hf = hi+5
+        numlist.append(seg)
+    return numlist
+        
+def checknumlist(sumlist,numlist,header):
+    '''
+    確認getnumList有無錯誤
+    '''
+    length = len(header)*6
+    for i in numlist:
+        length += len(i)
+    if len(sumlist)!=length:
+        print('Some ERROR happens!')
+    else:
+        print('<method \'getnumList\'> is working')
+
+def ToPayload(numlist):
+    payload = []
+    for i in numlist:
+        seg = []
+        for j in i:
+            seg+=[j[0]]*j[1]
+        payload.append(seg)
+    return payload
+
+
+
 
 
 
