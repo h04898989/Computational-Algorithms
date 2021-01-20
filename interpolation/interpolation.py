@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jan 20 20:34:30 2021
+
+@author: DengCheng
+"""
+
 import pandas as pd
 
 path = 'D:\Data\interpolation\ITRI0827'
@@ -33,7 +40,7 @@ for turn in range(2):
     for base in [1,4,7,9]:
         j = base + turn*11
         filepath = path+'\\'+str(j*2)+'.xlsx'
-        datas = (data[j-1].values**2 + data[j].values**2)/2
+        datas = ((data[j-1].values**2 + data[j].values**2)/2)**0.5
         indexs = data[j].index
         columns = data[j].columns
         dnew = pd.DataFrame(datas, columns=columns, index=indexs)
@@ -45,7 +52,7 @@ for turn in range(4):
     for base in [23,26]:
         j = base + turn*6
         filepath = path+'\\'+str(j*2-turn)+'.xlsx'
-        datas = (data[j-1].values**2 + data[j].values**2)/2
+        datas = ((data[j-1].values**2 + data[j].values**2)/2)**0.5
         indexs = data[j].index
         columns = data[j].columns
         dnew = pd.DataFrame(datas, columns=columns, index=indexs)
@@ -57,7 +64,7 @@ for turn in range(2):
     for base in [47,49,52,55]:
         j = base + turn*11
         filepath = path+'\\'+str(j*2-3)+'.xlsx'
-        datas = (data[j-1].values**2 + data[j].values**2)/2
+        datas = ((data[j-1].values**2 + data[j].values**2)/2)**0.5
         indexs = data[j].index
         columns = data[j].columns
         dnew = pd.DataFrame(datas, columns=columns, index=indexs)
