@@ -34,14 +34,18 @@ fig = plt.figure(figsize=(7, 7))
 ax = fig.add_subplot(111)
 ax.grid(True)
 ax.axis([-10,60,-10,50])
-scat1 = ax.scatter(p_sort.iloc[:,0], p_sort.iloc[:,1],color='b')
-scat2 = ax.scatter(p_sort.iloc[:,0], p_sort.iloc[:,1],color='',marker='o',edgecolor='green',s=1000)
+scat_p = ax.scatter(p_sort.iloc[:,0], p_sort.iloc[:,1],color='b')
+scat_c = ax.scatter(p_sort.iloc[:,0], p_sort.iloc[:,1],color='',marker='o',edgecolor='green',s=1000)
 #scat = ax.scatter(f.iloc[:,0], f.iloc[:,1],color='',marker='o',edgecolor='green',s=1000)
 
 delta_r = (ax.transData.transform(f.astype('float64'))-ax.transData.transform(p.astype('float64')))
-r = np.sqrt(np.sum(delta_r**2, axis=1))
+rr = np.sqrt(np.sum(delta_r**2, axis=1))
+r = np.zeros((1))
+for i in range(int(len(rr)/30)):
+    r = np.append(r, np.mean(rr[i*30:i*30+30], axis=0))
+r = np.delete(r, 0)
 size_pt = (2*r/fig.dpi*72)**2
-scat2.set_sizes(size_pt)
+scat_c.set_sizes(size_pt)
 
 plt.savefig('D:\Data\hw2_VLP\output.png',dpi=300,format="png")
 
